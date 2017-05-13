@@ -1,0 +1,57 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+.tile{
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  border: 1px solid #000;
+  background-color: green!important;
+}
+.row{
+  margin-bottom: -5px;
+}
+.circle{
+  transition: transform 2s ease-out;
+  margin: 5px auto;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+}
+.circle.flip{
+  animation-name: flip;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+}
+.black{
+  background-color: black;
+  color: white;
+}
+.white{
+  background-color: white;
+  color: black;
+}
+/*.tile.valid{
+  background-color: yellow!important;
+  color: black;
+}*/
+.circle.target{
+  width: 45px;
+  height: 45px;
+  background-color: transparent;
+}
+.circle.target.white{
+  border:3px solid white;
+}
+.circle.target.black{
+  border:3px solid black;
+}
+@keyframes flip {
+  50% {
+    transform: rotateX(90deg);
+  }
+  100%{
+    transform: rotateX(180deg);
+  }
+}
