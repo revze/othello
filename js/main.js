@@ -2,7 +2,70 @@ console.clear();
 
 var currentMove = '';
 var startGame = '';
-var timer = '';
+var gameTimer = '';
+
+function getAjax(url,success) {
+  var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+  xhr.open('GET',url);
+  xhr.onreadystatechange = function(){
+    if (xhr.readyState > 3 && xhr.status == 200) success(xhr.responseText);
+  };
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  xhr.send();
+  return xhr;
+}
+
+getAjax('backend/json.php',function(data){
+  var json = JSON.parse(data);
+  console.log(json.tes);
+});
+
+function postAjax(url,data,success) {
+  var params = typeof data == 'string' ? data : Object.keys(data).map(
+    function(k){
+      return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])}
+    ).join('&');
+
+    var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+    xhr.open('POST',url);
+    xhr.onreadystatechange = function(){
+      if (xhr.readyState > 3 && xhr.status == 200) {
+        success(xhr.responseText);
+      }
+    };
+    xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xhr.send(params);
+    return xhr;
+}
+
+// function postAjax(url,data,success) {
+//   var params = typeof data == 'string' ? data : Object.keys(data).map(function(k){
+//       return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+//     }).join('&');
+//
+//   var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+//   xhr.open('POST',url);
+//   xhr.onreadystatechange = function(){
+//     if (xhr.readyState > 3 && xhr.status == 200) {
+//       success(xhr.responseText);
+//     }
+//   };
+//   xhr.setRequestHeader('X-Requested-With','XMLHttpRequest');
+//   xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+//   xhr.send(params);
+//   return xhr;
+// }
+
+postAjax('backend/json-post.php',{name: 'Revando', nickname: 'revze'},function(data){
+  var json = JSON.parse(data);
+  console.log(json.nickname);
+});
+
+// postAjax('backend/json-post.php',{ name: 'Revando', nickname: 'revze' },function(data){
+//   var json = JSON.parse(data);
+//   console.log(json.nickname);
+// });
 
 function loadGame() {
   var gameBoard = localStorage.getItem('gameBoard');
@@ -12,7 +75,7 @@ function loadGame() {
   if (gameBoard != null && gameTime != null && gameMove != null ) {
     document.getElementById('game').innerHTML = gameBoard;
     startGame = gameTime;
-    setInterval(function(){
+    gameTimer = setInterval(function(){
       document.getElementById('time').innerHTML = Math.round((Date.now() - startGame) / 1000);
     },1000);
     currentMove = gameMove;
@@ -320,13 +383,16 @@ function isEnd() {
   var whiteTile = document.querySelectorAll('.tile.white').length;
   var blackTile = document.querySelectorAll('.tile.black').length;
   var gameBoard = document.getElementById('game');
+  var time = document.getElementById('time');
 
   if (validTile == 0) {
 
     localStorage.clear();
+    game.innerHTML = '';
+    clearInterval(gameTimer);
+    time.innerHTML = '';
 
     if (whiteTile > blackTile) {
-      game.innerHTML = '';
       alert('Player win!');
       return;
     }
@@ -388,7 +454,7 @@ function playGame() {
 
   startGame = Date.now();
 
-  timer = setInterval(function(){
+  gameTimer = setInterval(function(){
     var timer = Math.round((Date.now() - startGame) / 1000);
     document.getElementById('time').innerHTML = timer;
   },1000);

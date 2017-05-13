@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Upload File</title>
+  </head>
+  <body>
+    <form id="ajax-upload" action="backend/upload.php" method="post" enctype="multipart/form-data">
+    File: <input type="file" name="submitted">
+    <input type="hidden" name="someParam" value="someValue"/>
+      <button type="submit">Send via AJAX!</button>
+    </form>
+    <div id="result"></div>
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded',function(){
+      document.getElementById('ajax-upload').addEventListener('submit',function(e){
+        e.preventDefault();
+        var form = e.target;
+        var data = new FormData(form);
+
+        var request = new XMLHttpRequest();
+
+        request.open(form.method, form.action);
+        request.onreadystatechange = function(){
+          if (request.readyState == 4 && request.status == 200) {
+            obj = JSON.parse(request.responseText);
+            document.getElementById('result').innerHTML = obj.tes;
+          }
+        };
+
+        request.send(data);
+      });
+    });
+    // document.addEventListener("DOMContentLoaded", function() {
+    //     document.getElementById('ajax-upload').addEventListener("submit", function(e) {
+    //         e.preventDefault();
+    //         var form = e.target;
+    //         var data = new FormData(form);
+    //
+    //         var request = new XMLHttpRequest();
+    //
+    //         request.open(form.method, form.action);
+    //         request.onreadystatechange = function() {
+    //           if (request.readyState == 4 && request.status == 200) {
+    //               myObj = JSON.parse(request.responseText);
+    //               document.getElementById("result").innerHTML = myObj.tes;
+    //           }
+    //         };
+    //         request.send(data);
+    //     });
+    // });
+    </script>
+  </body>
+</html>
